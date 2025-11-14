@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Savatdagi Mahsulotlar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background: #0078d7;
+            color: white;
+        }
+        tr:hover {
+            background: #f0f8ff;
+        }
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+        .empty {
+            text-align: center;
+            color: gray;
+            font-size: 18px;
+            margin: 40px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: #0078d7;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #005fa3;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Savatdagi Mahsulotlar</h1>
+    <div class="container">
+        {% if basket_items %}
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Mahsulot</th>
+                <th>Kategoriya</th>
+                <th>Narx</th>
+                <th>Soni</th>
+                <th>Jami</th>
+                <th>Harakat</th>
+            </tr>
+            {% for item in basket_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.get_category_display }}</td>
+                <td>{{ item.product.price }} so'm</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.total_price }} so'm</td>
+                <td>
+                    <a href="{% url 'remove_from_basket' item.id %}" class="btn" style="background:#d9534f;">O‘chirish</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="total">
+            Umumiy summa: <strong>{{ total_price }} so'm</strong>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'all_product' %}" class="btn">🛍 Yana xarid qilish</a>
+            <a href="{% url 'checkout' %}" class="btn" style="background:green;">✅ To‘lovga o‘tish</a>
+        </div>
+        {% else %}
+        <p class="empty">Savat hozircha bo‘sh 😢</p>
+        <div style="text-align:center;">
+            <a href="{% url 'shop:all_product' %}" class="btn">🛒 Mahsulotlarni ko‘rish</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

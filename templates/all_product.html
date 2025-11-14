@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Barcha Mahsulotlar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #0078d7;
+            color: white;
+        }
+        tr:hover {
+            background: #f0f8ff;
+        }
+        .add-product {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #0078d7;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .add-product:hover {
+            background: #005fa3;
+        }
+        .no-products {
+            text-align: center;
+            color: gray;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Barcha Mahsulotlar</h1>
+    <div class="container">
+        <a href="/product_add" class="add-product">+ Mahsulot sotib olish</a>
+
+        {% if products %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Kategoriya</th>
+                <th>Narx</th>
+                <th>Tavsif</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.get_category_display }}</td>
+                <td>{{ product.price }} so'm</td>
+                <td>{{ product.description }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="no-products">Hozircha mahsulotlar mavjud emas.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

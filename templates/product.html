@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahsulotlar - Do'kon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .product-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            background: #ffe6e6;
+            color: #d63031;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-quantity {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">MyShop</div>
+                <div class="nav-links">
+                    <a href="/products/">Mahsulotlar</a>
+                    <a href="/basket/">Savat</a>
+                    <a href="/logout/">Chiqish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <h1 class="page-title">Mahsulot Sotib Olish</h1>
+            
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="productForm" method="POST" class="product-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Foydalanuvchi nomi</label>
+                    <input type="text" id="username" name="username" required placeholder="Foydalanuvchi nomingiz">
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Mahsulot nomi</label>
+                    <input type="text" id="name" name="name" required placeholder="Mahsulot nomi">
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Miqdor</label>
+                    <input type="number" id="quantity" name="quantity" required placeholder="Necha dona" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Kategoriya</label>
+                    <select id="category" name="category" required>
+                        <option value="">Kategoriyani tanlang</option>
+                        <option value="electronics">Elektronika</option>
+                        <option value="clothing">Kiyim-kechak</option>
+                        <option value="books">Kitoblar</option>
+                        <option value="food">Oziq-ovqat</option>
+                        <option value="other">Boshqa</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Sotib olish</button>
+            </form>
+
+            <!-- Mahsulotlar ro'yxati -->
+            <div class="products-grid" id="productsList">
+                <!-- Mahsulotlar JavaScript orqali yuklanadi -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form yuborish
+        document.getElementById('productForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            try {
+                const response = await fetch('/products/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: formData.get('username'),
+                        name: formData.get('name'),
+                        quantity: parseInt(formData.get('quantity')),
+                        category: formData.get('category')
+                    })
+                });
+
+                if (response.ok) {
+                    successDiv.textContent = 'Buyurtma muvaffaqiyatli qabul qilindi!';
+                    successDiv.style.display = 'block';
+                    errorDiv.style.display = 'none';
+                    
+                    // Formni tozalash
+                    this.reset();
+                    
+                    // Savat sahifasiga o'tish
+                    setTimeout(() => {
+                        window.location.href = '/basket/';
+                    }, 1500);
+                } else {
+                    const errorText = await response.text();
+                    errorDiv.textContent = 'Xato: ' + errorText;
+                    errorDiv.style.display = 'block';
+                    successDiv.style.display = 'none';
+                }
+            } catch (error) {
+                // Agar JSON muvaffaqiyatsiz bo'lsa, oddiy form submit qilamiz
+                this.submit();
+            }
+        });
+
+        // Mahsulotlarni yuklash (agar backendda API bo'lsa)
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products/');
+                if (response.ok) {
+                    const products = await response.json();
+                    displayProducts(products);
+                }
+            } catch (error) {
+                console.log('Mahsulotlarni yuklab bo\'lmadi');
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('productsList');
+            if (products.length === 0) {
+                container.innerHTML = '<p>Hozircha mahsulotlar mavjud emas</p>';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">${product.price} so'm</div>
+                    <div class="product-quantity">Qolgan: ${product.quantity} dona</div>
+                    <div class="product-category">${product.category}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
